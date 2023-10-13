@@ -3,8 +3,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package forms;
+import com.mysql.jdbc.ResultSetImpl;
 import database.koneksi;
 import javax.swing.JOptionPane;
+import java.sql.Statement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 /**
  *
  * @author LENOVO
@@ -20,6 +24,22 @@ public class dataterima extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         
         myobject = new koneksi();
+        
+        comboSupplier.removeAllItems();
+    
+    try {
+        Statement statement = koneksi.connect.createStatement();
+        String query = "SELECT nama FROM supplier";
+        ResultSet rs = statement.executeQuery(query);
+
+        while (rs.next()) {
+            String nama = rs.getString("nama");
+            comboSupplier.addItem(nama);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+        
     }
 
     /**
@@ -34,7 +54,7 @@ public class dataterima extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         txtNamaBarang = new javax.swing.JTextField();
         txtNamaSupplier = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        btnSimpan = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         jTextField3 = new javax.swing.JTextField();
@@ -61,10 +81,10 @@ public class dataterima extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("Masuk");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnSimpan.setText("Simpan");
+        btnSimpan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnSimpanActionPerformed(evt);
             }
         });
 
@@ -85,7 +105,7 @@ public class dataterima extends javax.swing.JFrame {
 
         jLabel5.setText("Hari/Tanggal");
 
-        comboSupplier.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        comboSupplier.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pilih" }));
         comboSupplier.setToolTipText("");
         comboSupplier.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -118,7 +138,7 @@ public class dataterima extends javax.swing.JFrame {
                         .addComponent(jLabel1))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(154, 154, 154)
-                        .addComponent(jButton1)
+                        .addComponent(btnSimpan)
                         .addGap(31, 31, 31)
                         .addComponent(jButton2)))
                 .addContainerGap(81, Short.MAX_VALUE))
@@ -152,7 +172,7 @@ public class dataterima extends javax.swing.JFrame {
                             .addComponent(jLabel5))))
                 .addGap(39, 39, 39)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
+                    .addComponent(btnSimpan)
                     .addComponent(jButton2))
                 .addContainerGap(54, Short.MAX_VALUE))
         );
@@ -171,9 +191,11 @@ public class dataterima extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNamaBarangActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void btnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimpanActionPerformed
+        
+        SIMPAN
+        
+    }//GEN-LAST:event_btnSimpanActionPerformed
 
     private void txtNamaSupplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNamaSupplierActionPerformed
         // TODO add your handling code here:
@@ -184,26 +206,20 @@ public class dataterima extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField3ActionPerformed
 
     private void comboSupplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboSupplierActionPerformed
-        
-        try { 
-             Class.forName("com.mysql.jdbc.Driver");
+      
+//        try {
+//            Statement statement = koneksi.connect.createStatement(); // Reuse the existing connection from koneksi class
+//            String query = "SELECT nama FROM supplier"; // Modify the query to select the "nama" column from the "supplier" table
+//            ResultSet rs = statement.executeQuery(query);
+//
+//            while (rs.next()) {
+//                String nama = rs.getString("nama");
+//                comboSupplier.addItem(nama);
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
 
-             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/recall", "username", "password");
-
-             Statement statement = connection.createStatement();
-             String query = "SELECT * FROM names";
-             ResultSet rs = statement.executeQuery(query);
-
-             while (rs.next())
-             {      
-                String name = rs.getString("name");         
-                names.addItem(rs.getString("name"));
-             }//end while
-             connection.close();
-             } catch (Exception e) {
-                  e.printStackTrace();
-             }
-        
     }//GEN-LAST:event_comboSupplierActionPerformed
 
     /**
@@ -245,8 +261,8 @@ public class dataterima extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnSimpan;
     private javax.swing.JComboBox<String> comboSupplier;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

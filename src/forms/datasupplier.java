@@ -161,7 +161,7 @@ public class datasupplier extends javax.swing.JFrame {
                 txtTeleponSupplier.requestFocus();
             } else {
                 String sql = "insert into supplier value (1,'" + txtNamaSupplier.getText() + "','" + txtAlamatSupplier.getText() + "','" + txtTeleponSupplier.getText() + "')";
-                myobject.connect.createStatement().execute(sql);
+                koneksi.connect.createStatement().execute(sql);
                 JOptionPane.showMessageDialog(this, "data berhasil di simpan");
                 txtNamaSupplier.setText("");
                 txtAlamatSupplier.setText("");

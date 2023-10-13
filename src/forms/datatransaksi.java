@@ -11,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-
 /**
  *
  * @author LENOVO
@@ -41,15 +40,15 @@ public class datatransaksi extends javax.swing.JFrame {
                 String namaPembeli = rs.getString("namapembeli");
                 String noTelp = rs.getString("notelp");
                 String alamat = rs.getString("alamat");
-                
-                String rowData = idkeranjang + ", "
-                        + namaBarang + ", "
-                        + jumlah + ", "
-                        + hargaBarang + ", "
-                        + totalHarga + ", "
-                        + namaPembeli + ", "
-                        + noTelp + ", "
-                        + alamat;
+
+                String rowData = idkeranjang + ",'"
+                        + namaBarang + "',"
+                        + jumlah + ","
+                        + hargaBarang + ","
+                        + totalHarga + ",'"
+                        + namaPembeli + "','"
+                        + noTelp + "','"
+                        + alamat + "'";
 
                 comboKeranjang.addItem(rowData);
             }
@@ -162,12 +161,37 @@ public class datatransaksi extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
-        
+        try {
+    if (txtTanggal.getText().isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Tanggal tidak boleh kosong!");
+        txtTanggal.requestFocus();
+    } else {
+        int response = JOptionPane.showConfirmDialog(this, "Apakah anda yakin untuk mengkonfirmasi transaksi ?", "Transaksi", JOptionPane.YES_NO_OPTION);
+        if (response == JOptionPane.YES_OPTION) {
+            String selectedItem = comboKeranjang.getSelectedItem().toString();
+            String[] itemParts = selectedItem.split(",");
+
+            String sql = "INSERT INTO datatransaksi (id_transaksi, namabarang, jumlah, hargabarang, totalharga, namapembeli, alamat, notelp, tanggal) " +
+                         "VALUES (1," + itemParts[1].trim() + ", " + itemParts[2].trim() + ", " + itemParts[3].trim() + ", " + itemParts[4].trim() + ", " + itemParts[5].trim() + ", " + itemParts[6].trim() + ", " + itemParts[7].trim() + ", '" + txtTanggal.getText() + "')";
+
+            koneksi.connect.createStatement().execute(sql);
+            JOptionPane.showMessageDialog(this, "Data berhasil disimpan!");
+            txtTanggal.setText("");
+            System.out.println("Proceeding...");
+        } else if (response == JOptionPane.NO_OPTION) {
+            System.out.println("Cancelled.");
+        }
+    }
+} catch (HeadlessException | SQLException e) {
+    JOptionPane.showMessageDialog(this, e.toString());
+}
+
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void comboKeranjangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboKeranjangActionPerformed
 
+        //String selectedKeranjang = comboKeranjang.getSelectedItem().toString();
 
     }//GEN-LAST:event_comboKeranjangActionPerformed
 

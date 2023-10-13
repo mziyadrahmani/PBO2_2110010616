@@ -5,6 +5,7 @@
 package forms;
 import com.mysql.jdbc.ResultSetImpl;
 import database.koneksi;
+import java.awt.HeadlessException;
 import javax.swing.JOptionPane;
 import java.sql.Statement;
 import java.sql.ResultSet;
@@ -26,19 +27,19 @@ public class dataterima extends javax.swing.JFrame {
         myobject = new koneksi();
         
         comboSupplier.removeAllItems();
-    
-    try {
-        Statement statement = koneksi.connect.createStatement();
-        String query = "SELECT nama FROM supplier";
-        ResultSet rs = statement.executeQuery(query);
 
-        while (rs.next()) {
-            String nama = rs.getString("nama");
-            comboSupplier.addItem(nama);
+        try {
+            Statement statement = koneksi.connect.createStatement();
+            String query = "SELECT nama FROM supplier";
+            ResultSet rs = statement.executeQuery(query);
+
+            while (rs.next()) {
+                String nama = rs.getString("nama");
+                comboSupplier.addItem(nama);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
         
     }
 
@@ -53,11 +54,11 @@ public class dataterima extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         txtNamaBarang = new javax.swing.JTextField();
-        txtNamaSupplier = new javax.swing.JTextField();
+        txtJumlah = new javax.swing.JTextField();
         btnSimpan = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
+        txtTanggal = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         comboSupplier = new javax.swing.JComboBox<>();
 
@@ -75,9 +76,9 @@ public class dataterima extends javax.swing.JFrame {
             }
         });
 
-        txtNamaSupplier.addActionListener(new java.awt.event.ActionListener() {
+        txtJumlah.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtNamaSupplierActionPerformed(evt);
+                txtJumlahActionPerformed(evt);
             }
         });
 
@@ -97,9 +98,9 @@ public class dataterima extends javax.swing.JFrame {
 
         jLabel4.setText("Jumlah");
 
-        jTextField3.addActionListener(new java.awt.event.ActionListener() {
+        txtTanggal.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField3ActionPerformed(evt);
+                txtTanggalActionPerformed(evt);
             }
         });
 
@@ -128,8 +129,8 @@ public class dataterima extends javax.swing.JFrame {
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(74, 74, 74)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtNamaSupplier, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtJumlah, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtTanggal, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(txtNamaBarang, javax.swing.GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE)
                                 .addComponent(comboSupplier, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE))))
@@ -144,7 +145,7 @@ public class dataterima extends javax.swing.JFrame {
                 .addContainerGap(81, Short.MAX_VALUE))
         );
 
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jTextField3, txtNamaBarang, txtNamaSupplier});
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {txtJumlah, txtNamaBarang, txtTanggal});
 
         layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jLabel2, jLabel3, jLabel4, jLabel5});
 
@@ -164,11 +165,11 @@ public class dataterima extends javax.swing.JFrame {
                             .addComponent(jLabel3))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtNamaSupplier, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtJumlah, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel4))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtTanggal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel5))))
                 .addGap(39, 39, 39)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -193,17 +194,38 @@ public class dataterima extends javax.swing.JFrame {
 
     private void btnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimpanActionPerformed
         
-        SIMPAN
+        try {
+
+            if (txtNamaBarang.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Nama belum di isi");
+                txtNamaBarang.requestFocus();
+            } else if (txtJumlah.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Jumlah belum di isi");
+                txtJumlah.requestFocus();
+            } else if (txtTanggal.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Tanggal belum di isi");
+                txtTanggal.requestFocus();
+            } else {
+                String sql = "insert into dataterima value (1,'" + txtNamaBarang.getText() + "','" + comboSupplier.getSelectedItem()+ "','" + txtJumlah.getText() + "','" + txtTanggal.getText() + "')";
+                koneksi.connect.createStatement().execute(sql);
+                JOptionPane.showMessageDialog(this, "data berhasil di simpan");
+                txtNamaBarang.setText("");
+                txtTanggal.setText("");
+                txtJumlah.setText("");
+            }
+        } catch (HeadlessException | SQLException e) {
+            JOptionPane.showMessageDialog(this, e.toString());
+        }
         
     }//GEN-LAST:event_btnSimpanActionPerformed
 
-    private void txtNamaSupplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNamaSupplierActionPerformed
+    private void txtJumlahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtJumlahActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtNamaSupplierActionPerformed
+    }//GEN-LAST:event_txtJumlahActionPerformed
 
-    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
+    private void txtTanggalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTanggalActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField3ActionPerformed
+    }//GEN-LAST:event_txtTanggalActionPerformed
 
     private void comboSupplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboSupplierActionPerformed
       
@@ -269,8 +291,8 @@ public class dataterima extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField txtJumlah;
     private javax.swing.JTextField txtNamaBarang;
-    private javax.swing.JTextField txtNamaSupplier;
+    private javax.swing.JTextField txtTanggal;
     // End of variables declaration//GEN-END:variables
 }

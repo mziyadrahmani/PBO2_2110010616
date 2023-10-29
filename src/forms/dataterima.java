@@ -206,7 +206,7 @@ public class dataterima extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Tanggal belum di isi");
                 txtTanggal.requestFocus();
             } else {
-                String sql = "insert into dataterima value (1,'" + txtNamaBarang.getText() + "','" + comboSupplier.getSelectedItem()+ "','" + txtJumlah.getText() + "','" + txtTanggal.getText() + "')";
+                String sql = "insert into dataterima value (null,'" + txtNamaBarang.getText() + "','" + comboSupplier.getSelectedItem()+ "','" + txtJumlah.getText() + "','" + txtTanggal.getText() + "')";
                 koneksi.connect.createStatement().execute(sql);
                 JOptionPane.showMessageDialog(this, "data berhasil di simpan");
                 txtNamaBarang.setText("");

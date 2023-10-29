@@ -172,7 +172,7 @@ public class datatransaksi extends javax.swing.JFrame {
             String[] itemParts = selectedItem.split(",");
 
             String sql = "INSERT INTO datatransaksi (id_transaksi, namabarang, jumlah, hargabarang, totalharga, namapembeli, alamat, notelp, tanggal) " +
-                         "VALUES (1," + itemParts[1].trim() + ", " + itemParts[2].trim() + ", " + itemParts[3].trim() + ", " + itemParts[4].trim() + ", " + itemParts[5].trim() + ", " + itemParts[6].trim() + ", " + itemParts[7].trim() + ", '" + txtTanggal.getText() + "')";
+                         "VALUES (null," + itemParts[1].trim() + ", " + itemParts[2].trim() + ", " + itemParts[3].trim() + ", " + itemParts[4].trim() + ", " + itemParts[5].trim() + ", " + itemParts[6].trim() + ", " + itemParts[7].trim() + ", '" + txtTanggal.getText() + "')";
 
             koneksi.connect.createStatement().execute(sql);
             JOptionPane.showMessageDialog(this, "Data berhasil disimpan!");

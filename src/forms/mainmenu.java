@@ -120,14 +120,14 @@ public class mainmenu extends javax.swing.JFrame {
 
     private void btnBarangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBarangActionPerformed
 
-        databarang dataBarangForm = new databarang();
+        dataBarang dataBarangForm = new dataBarang();
         dataBarangForm.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnBarangActionPerformed
 
     private void btnKeranjangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKeranjangActionPerformed
         
-        datakeranjang datakeranjangForm = new datakeranjang();
+        dataKeranjang datakeranjangForm = new dataKeranjang();
         datakeranjangForm.setVisible(true);
         this.dispose();
         

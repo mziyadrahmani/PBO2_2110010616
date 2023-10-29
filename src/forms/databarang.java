@@ -11,21 +11,32 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author LENOVO
  */
-public class databarang extends javax.swing.JFrame {
+public class dataBarang extends javax.swing.JFrame {
 
     koneksi myobject;
 
-    public databarang() {
+    public DefaultTableModel modelTabelBarang;
+
+    public dataBarang() {
         initComponents();
 
         this.setLocationRelativeTo(null);
 
         myobject = new koneksi();
+
+        modelTabelBarang = new DefaultTableModel();
+        tableBarang.setModel(modelTabelBarang);
+        modelTabelBarang.addColumn("ID");
+        modelTabelBarang.addColumn("Nama");
+        modelTabelBarang.addColumn("Stok");
+        modelTabelBarang.addColumn("Barang");
+        tampilDataBarang();
 
         comboBarang.removeAllItems();
 
@@ -60,6 +71,10 @@ public class databarang extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         comboBarang = new javax.swing.JComboBox<>();
         jButton1 = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tableBarang = new javax.swing.JTable();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -93,10 +108,46 @@ public class databarang extends javax.swing.JFrame {
             }
         });
 
+        tableBarang.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        tableBarang.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableBarangMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tableBarang);
+
+        jButton3.setText("Ubah");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        jButton4.setText("Hapus");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(185, 185, 185))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -113,15 +164,18 @@ public class databarang extends javax.swing.JFrame {
                                     .addComponent(txtHarga)
                                     .addComponent(comboBarang, 0, 182, Short.MAX_VALUE)))))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(116, 116, 116)
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 456, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(52, 52, 52)
                         .addComponent(jButton1)
-                        .addGap(69, 69, 69)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton3)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton4)
+                        .addGap(18, 18, 18)
                         .addComponent(jButton2)))
-                .addContainerGap(69, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(185, 185, 185))
+                .addContainerGap(11, Short.MAX_VALUE))
         );
 
         layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jLabel2, jLabel3, jLabel4});
@@ -146,12 +200,38 @@ public class databarang extends javax.swing.JFrame {
                 .addGap(30, 30, 30)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
-                    .addComponent(jButton1))
-                .addContainerGap(33, Short.MAX_VALUE))
+                    .addComponent(jButton1)
+                    .addComponent(jButton3)
+                    .addComponent(jButton4))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    public void tampilDataBarang() {
+        try {
+            modelTabelBarang.getDataVector().removeAllElements();
+            modelTabelBarang.fireTableDataChanged();
+
+            java.sql.PreparedStatement query = myobject.connect.prepareStatement("SELECT * FROM databarang");
+            ResultSet data = query.executeQuery();
+            while (data.next()) {
+                Object[] baris = new Object[4];
+                baris[0] = data.getString("id");
+                baris[1] = data.getString("nama");
+                baris[2] = data.getString("stok");
+                baris[3] = data.getString("harga");
+                modelTabelBarang.addRow(baris);
+
+            }
+            query.close();
+            data.close();
+        } catch (Exception e) {
+        }
+    }
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
@@ -164,7 +244,6 @@ public class databarang extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
         try {
-
             if (txtStok.getText().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Stok belum di isi");
                 txtStok.requestFocus();
@@ -172,15 +251,25 @@ public class databarang extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Harga belum di isi");
                 txtHarga.requestFocus();
             } else {
-                String sql = "insert into databarang value (1,'" + comboBarang.getSelectedItem() + "','" + txtStok.getText() + "','" + txtHarga.getText() + "')";
-                koneksi.connect.createStatement().execute(sql);
-                JOptionPane.showMessageDialog(this, "data berhasil di simpan");
+                String insertQuery = "INSERT INTO databarang (id, nama, stok, harga) VALUE (null, ?, ?, ?)";
+
+                java.sql.PreparedStatement preparedStatement = koneksi.connect.prepareStatement(insertQuery);
+
+                preparedStatement.setString(1, comboBarang.getSelectedItem().toString());
+                preparedStatement.setString(2, txtStok.getText());
+                preparedStatement.setString(3, txtHarga.getText());
+
+                preparedStatement.executeUpdate();
+
+                JOptionPane.showMessageDialog(this, "Data berhasil disimpan");
                 txtStok.setText("");
                 txtHarga.setText("");
+                tampilDataBarang();
             }
         } catch (HeadlessException | SQLException e) {
             JOptionPane.showMessageDialog(this, e.toString());
         }
+
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -205,8 +294,68 @@ public class databarang extends javax.swing.JFrame {
             e.printStackTrace();
         }
 
-        
+
     }//GEN-LAST:event_comboBarangActionPerformed
+
+    private void tableBarangMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableBarangMouseClicked
+
+        int baris = tableBarang.getSelectedRow();
+        //String id = tableBarang.getValueAt(baris, 0).toString();
+        String barang = tableBarang.getValueAt(baris, 1).toString();
+        String stok = tableBarang.getValueAt(baris, 2).toString();
+        String harga = tableBarang.getValueAt(baris, 3).toString();
+        //.setText(npm);
+        comboBarang.setSelectedItem(barang);
+        txtStok.setText(stok);
+        txtHarga.setText(harga);
+
+    }//GEN-LAST:event_tableBarangMouseClicked
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+
+        try {
+            if (comboBarang.getSelectedItem() == null || comboBarang.getSelectedItem().toString().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Silahkan pilih data terlebih dahulu");
+            } else {
+                String sql = "DELETE from databarang WHERE nama=?";
+                java.sql.PreparedStatement hapus = myobject.connect.prepareStatement(sql);
+                hapus.setString(1, (String) comboBarang.getSelectedItem());
+
+                hapus.executeUpdate();
+                tampilDataBarang();
+                JOptionPane.showMessageDialog(this, "data berhasil dihapus!");
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Terjadi kesalahan: " + e.getMessage());
+        }
+
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+
+        try {
+            if ( //(txtnpm.getText().isEmpty()) &&
+                    //                    (comboBarang.getText().isEmpty()) &&
+                    (txtStok.getText().isEmpty())
+                    && (txtHarga.getText().isEmpty())) {
+                JOptionPane.showMessageDialog(this, "Silahkan pilih data terlebih dahulu");
+            } else {
+                String sql = "UPDATE databarang SET stok=?, harga=? WHERE nama=?";
+                java.sql.PreparedStatement ubah = myobject.connect.prepareStatement(sql);
+                ubah.setString(1, txtStok.getText());
+                ubah.setString(2, txtHarga.getText());
+                ubah.setString(3, (String) comboBarang.getSelectedItem());
+                ubah.executeUpdate();
+                tampilDataBarang();
+                JOptionPane.showMessageDialog(this, "data berhasil diubah!");
+
+            }
+        } catch (Exception e) {
+        }
+
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -225,21 +374,23 @@ public class databarang extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(databarang.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(dataBarang.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(databarang.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(dataBarang.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(databarang.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(dataBarang.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(databarang.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(dataBarang.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new databarang().setVisible(true);
+                new dataBarang().setVisible(true);
             }
         });
     }
@@ -248,10 +399,14 @@ public class databarang extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> comboBarang;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tableBarang;
     private javax.swing.JTextField txtHarga;
     private javax.swing.JTextField txtStok;
     // End of variables declaration//GEN-END:variables

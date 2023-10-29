@@ -160,7 +160,7 @@ public class datasupplier extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Telepon belum di isi");
                 txtTeleponSupplier.requestFocus();
             } else {
-                String sql = "insert into supplier value (1,'" + txtNamaSupplier.getText() + "','" + txtAlamatSupplier.getText() + "','" + txtTeleponSupplier.getText() + "')";
+                String sql = "insert into supplier value (null,'" + txtNamaSupplier.getText() + "','" + txtAlamatSupplier.getText() + "','" + txtTeleponSupplier.getText() + "')";
                 koneksi.connect.createStatement().execute(sql);
                 JOptionPane.showMessageDialog(this, "data berhasil di simpan");
                 txtNamaSupplier.setText("");

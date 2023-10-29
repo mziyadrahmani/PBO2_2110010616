@@ -34,8 +34,8 @@ public class dataBarang extends javax.swing.JFrame {
         tableBarang.setModel(modelTabelBarang);
         modelTabelBarang.addColumn("ID");
         modelTabelBarang.addColumn("Nama");
-        modelTabelBarang.addColumn("Stok");
-        modelTabelBarang.addColumn("Barang");
+        modelTabelBarang.addColumn("Jumlah");
+        modelTabelBarang.addColumn("Harga");
         tampilDataBarang();
 
         comboBarang.removeAllItems();
@@ -219,12 +219,12 @@ public class dataBarang extends javax.swing.JFrame {
             java.sql.PreparedStatement query = myobject.connect.prepareStatement("SELECT * FROM databarang");
             ResultSet data = query.executeQuery();
             while (data.next()) {
-                Object[] baris = new Object[4];
-                baris[0] = data.getString("id");
-                baris[1] = data.getString("nama");
-                baris[2] = data.getString("stok");
-                baris[3] = data.getString("harga");
-                modelTabelBarang.addRow(baris);
+                Object[] kolom = new Object[4];
+                kolom[0] = data.getString("id");
+                kolom[1] = data.getString("nama");
+                kolom[2] = data.getString("stok");
+                kolom[3] = data.getString("harga");
+                modelTabelBarang.addRow(kolom);
 
             }
             query.close();
@@ -253,13 +253,13 @@ public class dataBarang extends javax.swing.JFrame {
             } else {
                 String insertQuery = "INSERT INTO databarang (id, nama, stok, harga) VALUE (null, ?, ?, ?)";
 
-                java.sql.PreparedStatement preparedStatement = koneksi.connect.prepareStatement(insertQuery);
+                java.sql.PreparedStatement simpan = koneksi.connect.prepareStatement(insertQuery);
 
-                preparedStatement.setString(1, comboBarang.getSelectedItem().toString());
-                preparedStatement.setString(2, txtStok.getText());
-                preparedStatement.setString(3, txtHarga.getText());
+                simpan.setString(1, comboBarang.getSelectedItem().toString());
+                simpan.setString(2, txtStok.getText());
+                simpan.setString(3, txtHarga.getText());
 
-                preparedStatement.executeUpdate();
+                simpan.executeUpdate();
 
                 JOptionPane.showMessageDialog(this, "Data berhasil disimpan");
                 txtStok.setText("");
@@ -299,11 +299,11 @@ public class dataBarang extends javax.swing.JFrame {
 
     private void tableBarangMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableBarangMouseClicked
 
-        int baris = tableBarang.getSelectedRow();
-        //String id = tableBarang.getValueAt(baris, 0).toString();
-        String barang = tableBarang.getValueAt(baris, 1).toString();
-        String stok = tableBarang.getValueAt(baris, 2).toString();
-        String harga = tableBarang.getValueAt(baris, 3).toString();
+        int kolom = tableBarang.getSelectedRow();
+        //String id = tableBarang.getValueAt(kolom, 0).toString();
+        String barang = tableBarang.getValueAt(kolom, 1).toString();
+        String stok = tableBarang.getValueAt(kolom, 2).toString();
+        String harga = tableBarang.getValueAt(kolom, 3).toString();
         //.setText(npm);
         comboBarang.setSelectedItem(barang);
         txtStok.setText(stok);

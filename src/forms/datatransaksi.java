@@ -10,6 +10,9 @@ import java.awt.HeadlessException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -18,6 +21,7 @@ import java.sql.Statement;
 public class datatransaksi extends javax.swing.JFrame {
 
     koneksi myobject;
+    public DefaultTableModel modelTabelTransaksi;
 
     public datatransaksi() {
         initComponents();
@@ -26,13 +30,28 @@ public class datatransaksi extends javax.swing.JFrame {
 
         myobject = new koneksi();
 
+        comboKeranjang.removeAllItems();
+
+        modelTabelTransaksi = new DefaultTableModel();
+        tableTransaksi.setModel(modelTabelTransaksi);
+        modelTabelTransaksi.addColumn("ID");
+        modelTabelTransaksi.addColumn("Nama");
+        modelTabelTransaksi.addColumn("Jumlah");
+        modelTabelTransaksi.addColumn("Harga");
+        modelTabelTransaksi.addColumn("Total");
+        modelTabelTransaksi.addColumn("Pembeli");
+        modelTabelTransaksi.addColumn("Telp");
+        modelTabelTransaksi.addColumn("Alamat");
+        modelTabelTransaksi.addColumn("Tanggal Transaksi");
+
+        tampilDataTransaksi();
+
         try {
             Statement statement = koneksi.connect.createStatement();
             String query = "SELECT * FROM datakeranjang";
             ResultSet rs = statement.executeQuery(query);
 
             while (rs.next()) {
-                int idkeranjang = rs.getInt("idkeranjang");
                 String namaBarang = rs.getString("namabarang");
                 int jumlah = rs.getInt("jumlah");
                 int hargaBarang = rs.getInt("hargabarang");
@@ -41,14 +60,13 @@ public class datatransaksi extends javax.swing.JFrame {
                 String noTelp = rs.getString("notelp");
                 String alamat = rs.getString("alamat");
 
-                String rowData = idkeranjang + ",'"
-                        + namaBarang + "',"
+                String rowData = namaBarang + ","
                         + jumlah + ","
                         + hargaBarang + ","
-                        + totalHarga + ",'"
-                        + namaPembeli + "','"
-                        + noTelp + "','"
-                        + alamat + "'";
+                        + totalHarga + ","
+                        + namaPembeli + ","
+                        + noTelp + ","
+                        + alamat;
 
                 comboKeranjang.addItem(rowData);
             }
@@ -66,18 +84,22 @@ public class datatransaksi extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        txtTanggal = new javax.swing.JTextField();
         jButton2 = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         comboKeranjang = new javax.swing.JComboBox<>();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tableTransaksi = new javax.swing.JTable();
+        txtCari = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        jButton4 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        txtSelected = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setText("FORM TRANSAKSI");
-
-        jLabel2.setText("Tanggal Transaksi");
 
         jButton2.setText("Kembali");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -86,7 +108,7 @@ public class datatransaksi extends javax.swing.JFrame {
             }
         });
 
-        jLabel3.setText("Pilih Keranjang");
+        jLabel3.setText("Selected Data");
 
         jButton1.setText("Konfirmasi Transaksi");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -102,6 +124,61 @@ public class datatransaksi extends javax.swing.JFrame {
             }
         });
 
+        tableTransaksi.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        tableTransaksi.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
+        tableTransaksi.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableTransaksiMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tableTransaksi);
+
+        txtCari.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCariActionPerformed(evt);
+            }
+        });
+        txtCari.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtCariKeyPressed(evt);
+            }
+        });
+
+        jLabel10.setText("Cari data");
+
+        jButton4.setText("Hapus");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
+        jButton3.setText("Ubah");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setText("Pilih Keranjang");
+
+        txtSelected.setEditable(false);
+        txtSelected.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtSelectedActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -109,25 +186,38 @@ public class datatransaksi extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(72, 72, 72)
+                        .addGap(64, 64, 64)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(txtTanggal, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(txtCari))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jButton1)
+                                .addGap(150, 150, 150)
+                                .addComponent(jButton3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 162, Short.MAX_VALUE)
+                                .addComponent(jButton4)
+                                .addGap(197, 197, 197)
+                                .addComponent(jButton2))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(78, 78, 78)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(comboKeranjang, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(179, 179, 179)
-                        .addComponent(jButton1)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton2))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(266, 266, 266)
-                        .addComponent(jLabel1)))
-                .addContainerGap(27, Short.MAX_VALUE))
+                                .addComponent(txtSelected))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(comboKeranjang, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(38, 38, 38))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(431, 431, 431))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -135,22 +225,60 @@ public class datatransaksi extends javax.swing.JFrame {
                 .addGap(58, 58, 58)
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(comboKeranjang))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(comboKeranjang)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabel4)))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(txtTanggal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtSelected, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addGap(17, 17, 17)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton3)
+                    .addComponent(jButton4)
+                    .addComponent(jButton1)
+                    .addComponent(jButton2))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
-                    .addComponent(jButton1))
-                .addContainerGap(126, Short.MAX_VALUE))
+                    .addComponent(jLabel10)
+                    .addComponent(txtCari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(7, 7, 7)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(33, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    public void tampilDataTransaksi() {
+        try {
+            modelTabelTransaksi.getDataVector().removeAllElements();
+            modelTabelTransaksi.fireTableDataChanged();
+
+            java.sql.PreparedStatement query = myobject.connect.prepareStatement("SELECT * FROM datatransaksi");
+            ResultSet data = query.executeQuery();
+            while (data.next()) {
+                Object[] kolom = new Object[9];
+                kolom[0] = data.getString("id");
+                kolom[1] = data.getString("namabarang");
+                kolom[2] = data.getString("jumlah");
+                kolom[3] = data.getString("hargabarang");
+                kolom[4] = data.getString("totalharga");
+                kolom[5] = data.getString("namapembeli");
+                kolom[6] = data.getString("notelp");
+                kolom[7] = data.getString("alamat");
+                kolom[8] = data.getString("tanggal");
+                modelTabelTransaksi.addRow(kolom);
+
+            }
+            query.close();
+            data.close();
+            tableTransaksi.setAutoResizeMode(tableTransaksi.AUTO_RESIZE_ALL_COLUMNS);
+        } catch (Exception e) {
+        }
+    }
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
@@ -162,30 +290,44 @@ public class datatransaksi extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
         try {
-    if (txtTanggal.getText().isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Tanggal tidak boleh kosong!");
-        txtTanggal.requestFocus();
-    } else {
-        int response = JOptionPane.showConfirmDialog(this, "Apakah anda yakin untuk mengkonfirmasi transaksi ?", "Transaksi", JOptionPane.YES_NO_OPTION);
-        if (response == JOptionPane.YES_OPTION) {
-            String selectedItem = comboKeranjang.getSelectedItem().toString();
-            String[] itemParts = selectedItem.split(",");
+            int response = JOptionPane.showConfirmDialog(this, "Apakah anda yakin untuk mengkonfirmasi transaksi ?", "Transaksi", JOptionPane.YES_NO_OPTION);
+            if (response == JOptionPane.YES_OPTION) {
+                LocalDateTime currentDateTime = LocalDateTime.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+                String tanggal = currentDateTime.format(formatter);
 
-            String sql = "INSERT INTO datatransaksi (id_transaksi, namabarang, jumlah, hargabarang, totalharga, namapembeli, alamat, notelp, tanggal) " +
-                         "VALUES (null," + itemParts[1].trim() + ", " + itemParts[2].trim() + ", " + itemParts[3].trim() + ", " + itemParts[4].trim() + ", " + itemParts[5].trim() + ", " + itemParts[6].trim() + ", " + itemParts[7].trim() + ", '" + txtTanggal.getText() + "')";
+                String selectedItem = comboKeranjang.getSelectedItem().toString();
+                String[] itemParts = selectedItem.split(",");
 
-            koneksi.connect.createStatement().execute(sql);
-            JOptionPane.showMessageDialog(this, "Data berhasil disimpan!");
-            txtTanggal.setText("");
-            System.out.println("Proceeding...");
-        } else if (response == JOptionPane.NO_OPTION) {
-            System.out.println("Cancelled.");
+                for (int i = 0; i < itemParts.length; i++) {
+                    System.out.println("itemParts[" + i + "]: " + itemParts[i]);
+                }
+
+                String sql = "INSERT INTO datatransaksi (id, namabarang, jumlah, hargabarang, totalharga, namapembeli, notelp, alamat, tanggal) "
+                        + "VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+                java.sql.PreparedStatement ps = koneksi.connect.prepareStatement(sql);
+                ps.setString(1, itemParts[0].trim());
+                ps.setInt(2, Integer.parseInt(itemParts[1].trim()));
+                ps.setInt(3, Integer.parseInt(itemParts[2].trim()));
+                ps.setInt(4, Integer.parseInt(itemParts[3].trim()));
+                ps.setString(5, itemParts[4].trim());
+                ps.setString(6, itemParts[5].trim());
+                ps.setString(7, itemParts[6].trim());
+                ps.setString(8, tanggal);
+
+                ps.executeUpdate();
+                tampilDataTransaksi();
+                JOptionPane.showMessageDialog(this, "Data berhasil disimpan!");
+                System.out.println("Proceeding...");
+
+                ps.close();
+            } else if (response == JOptionPane.NO_OPTION) {
+                System.out.println("Cancelled.");
+            }
+        } catch (HeadlessException | SQLException e) {
+            JOptionPane.showMessageDialog(this, e.toString());
         }
-    }
-} catch (HeadlessException | SQLException e) {
-    JOptionPane.showMessageDialog(this, e.toString());
-}
-
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -194,6 +336,123 @@ public class datatransaksi extends javax.swing.JFrame {
         //String selectedKeranjang = comboKeranjang.getSelectedItem().toString();
 
     }//GEN-LAST:event_comboKeranjangActionPerformed
+
+    private void tableTransaksiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableTransaksiMouseClicked
+
+        int kolom = tableTransaksi.getSelectedRow();
+        txtSelected.setText("");
+        if (kolom != -1) {
+            String id = tableTransaksi.getValueAt(kolom, 0).toString();
+//            String namabarang = tableTransaksi.getValueAt(kolom, 2).toString();
+//            String jumlah = tableTransaksi.getValueAt(kolom, 3).toString();
+//            String harga = tableTransaksi.getValueAt(kolom, 4).toString();
+//            String totalharga = tableTransaksi.getValueAt(kolom, 5).toString();
+//            String namapembeli = tableTransaksi.getValueAt(kolom, 6).toString();
+//            String telepon = tableTransaksi.getValueAt(kolom, 7).toString();
+//            String alamat = tableTransaksi.getValueAt(kolom, 8).toString();
+//            String tanggal = tableTransaksi.getValueAt(kolom, 9).toString();
+
+//            txtSelected.setText(id + "," + namabarang + "," + jumlah + "," + harga + "," + totalharga + "," + namapembeli + "," + telepon + "," + alamat + "," + tanggal);
+            txtSelected.setText(id);
+        }
+    }//GEN-LAST:event_tableTransaksiMouseClicked
+
+    private void txtCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCariActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCariActionPerformed
+
+    private void txtCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCariKeyPressed
+
+        modelTabelTransaksi.getDataVector().removeAllElements();
+        modelTabelTransaksi.fireTableDataChanged();
+
+        try {
+            String sqlcari = "SELECT * FROM datatransaksi WHERE barang LIKE ? OR supplier LIKE ?";
+            java.sql.PreparedStatement cari = myobject.connect.prepareStatement(sqlcari);
+            cari.setString(1, "%" + txtCari.getText() + "%");
+            cari.setString(2, "%" + txtCari.getText() + "%");
+
+            ResultSet data = cari.executeQuery();
+            while (data.next()) {
+                Object[] baris = new Object[5];
+                baris[0] = data.getString("no");
+                baris[1] = data.getString("barang");
+                baris[2] = data.getString("supplier");
+                baris[3] = data.getString("jumlah");
+                baris[4] = data.getString("tanggal");
+
+                modelTabelTransaksi.addRow(baris);
+            }
+            cari.close();
+            data.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_txtCariKeyPressed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+
+        try {
+            if ((txtSelected.getText()).isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Silahkan pilih data terlebih dahulu");
+            } else {
+                int dialogResult = JOptionPane.showConfirmDialog(this, "Apakah Anda yakin ingin menghapus data ini?", "Konfirmasi Hapus Data", JOptionPane.YES_NO_OPTION);
+                if (dialogResult == JOptionPane.YES_OPTION) {
+                    String sql = "DELETE FROM datatransaksi WHERE id = ?";
+                    java.sql.PreparedStatement hapus = myobject.connect.prepareStatement(sql);
+                    hapus.setString(1, txtSelected.getText());
+
+                    hapus.executeUpdate();
+                    tampilDataTransaksi();
+                    JOptionPane.showMessageDialog(this, "Data berhasil dihapus!");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Terjadi kesalahan: " + e.getMessage());
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        String message = "Berdasarkan UU Perlindungan Konsumen, memanipulasi data transaksi jual beli elektronik (bukti pembayaran) \n\n"
+                + "dapat dikategorikan sebagai tindak pidana jika dilakukan dengan sengaja untuk mengelabui konsumen. Tindak pidana\n\n "
+                + "tersebut diatur dalam Pasal 62 ayat (1) UU Perlindungan Konsumen, yaitu:\n\n"
+                + "(1) Pelaku usaha yang dengan sengaja memproduksi atau memperdagangkan barang atau jasa yang tidak memenuhi standar \n\n"
+                + "atau persyaratan keamanan, keselamatan, kesehatan, atau lingkungan hidup yang diperuntukkan bagi konsumen, dipidana\n\n "
+                + "dengan pidana penjara paling lama 5 (lima) tahun dan/atau pidana denda paling banyak Rp2.000.000.000,00 (dua miliar\n\n "
+                + "rupiah).\n\n"
+                + "Berdasarkan ketentuan tersebut, pelaku usaha yang dengan sengaja memanipulasi data transaksi jual beli elektronik \n\n"
+                + "(bukti pembayaran) untuk mengelabui konsumen, dapat dipidana dengan pidana penjara paling lama 5 (lima) tahun dan/atau\n\n "
+                + "pidana denda paling banyak Rp2.000.000.000,00 (dua miliar rupiah).\n\n"
+                + "         ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠛⠛⠛⠋⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠙⠛⠛⠛⠿⠻⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿\n"
+                + "         ⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠋⠀⠀⠀⠀⠀⡀⠠⠤⠒⢂⣉⣉⣉⣑⣒⣒⠒⠒⠒⠒⠒⠒⠒⠀⠀⠐⠒⠚⠻⠿⠿⣿⣿⣿⣿⣿⣿⣿⣿\n"
+                + "         ⣿⣿⣿⣿⣿⣿⣿⣿⠏⠀⠀⠀⠀⡠⠔⠉⣀⠔⠒⠉⣀⣀⠀⠀⠀⣀⡀⠈⠉⠑⠒⠒⠒⠒⠒⠈⠉⠉⠉⠁⠂⠀⠈⠙⢿⣿⣿⣿⣿⣿\n"
+                + "         ⣿⣿⣿⣿⣿⣿⣿⠇⠀⠀⠀⠔⠁⠠⠖⠡⠔⠊⠀⠀⠀⠀⠀⠀⠀⠐⡄⠀⠀⠀⠀⠀⠀⡄⠀⠀⠀⠀⠉⠲⢄⠀⠀⠀⠈⣿⣿⣿⣿⣿\n"
+                + "         ⣿⣿⣿⣿⣿⣿⠋⠀⠀⠀⠀⠀⠀⠀⠊⠀⢀⣀⣤⣤⣤⣤⣀⠀⠀⠀⢸⠀⠀⠀⠀⠀⠜⠀⠀⠀⠀⣀⡀⠀⠈⠃⠀⠀⠀⠸⣿⣿⣿⣿\n"
+                + "         ⣿⣿⣿⣿⡿⠥⠐⠂⠀⠀⠀⠀⡄⠀⠰⢺⣿⣿⣿⣿⣿⣟⠀⠈⠐⢤⠀⠀⠀⠀⠀⠀⢀⣠⣶⣾⣯⠀⠀⠉⠂⠀⠠⠤⢄⣀⠙⢿⣿⣿\n"
+                + "         ⣿⡿⠋⠡⠐⠈⣉⠭⠤⠤⢄⡀⠈⠀⠈⠁⠉⠁⡠⠀⠀⠀⠉⠐⠠⠔⠀⠀⠀⠀⠀⠲⣿⠿⠛⠛⠓⠒⠂⠀⠀⠀⠀⠀⠀⠠⡉⢢⠙⣿\n"
+                + "         ⣿⠀⢀⠁⠀⠊⠀⠀⠀⠀⠀⠈⠁⠒⠂⠀⠒⠊⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡇⠀⠀⠀⠀⠀⢀⣀⡠⠔⠒⠒⠂⠀⠈⠀⡇⣿\n"
+                + "         ⣿⠀⢸⠀⠀⠀⢀⣀⡠⠋⠓⠤⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠄⠀⠀⠀⠀⠀⠀⠈⠢⠤⡀⠀⠀⠀⠀⠀⠀⢠⠀⠀⠀⡠⠀⡇⣿\n"
+                + "         ⣿⡀⠘⠀⠀⠀⠀⠀⠘⡄⠀⠀⠀⠈⠑⡦⢄⣀⠀⠀⠐⠒⠁⢸⠀⠀⠠⠒⠄⠀⠀⠀⠀⠀⢀⠇⠀⣀⡀⠀⠀⢀⢾⡆⠀⠈⡀⠎⣸⣿                  Jangan marah\n"
+                + "         ⣿⣿⣄⡈⠢⠀⠀⠀⠀⠘⣶⣄⡀⠀⠀⡇⠀⠀⠈⠉⠒⠢⡤⣀⡀⠀⠀⠀⠀⠀⠐⠦⠤⠒⠁⠀⠀⠀⠀⣀⢴⠁⠀⢷⠀⠀⠀⢰⣿⣿\n"
+                + "         ⣿⣿⣿⣿⣇⠂⠀⠀⠀⠀⠈⢂⠀⠈⠹⡧⣀⠀⠀⠀⠀⠀⡇⠀⠀⠉⠉⠉⢱⠒⠒⠒⠒⢖⠒⠒⠂⠙⠏⠀⠘⡀⠀⢸⠀⠀⠀⣿⣿⣿\n"
+                + "         ⣿⣿⣿⣿⣿⣧⠀⠀⠀⠀⠀⠀⠑⠄⠰⠀⠀⠁⠐⠲⣤⣴⣄⡀⠀⠀⠀⠀⢸⠀⠀⠀⠀⢸⠀⠀⠀⠀⢠⠀⣠⣷⣶⣿⠀⠀⢰⣿⣿⣿\n"
+                + "         ⣿⣿⣿⣿⣿⣿⣧⠀⠀⠀⠀⠀⠀⠀⠁⢀⠀⠀⠀⠀⠀⡙⠋⠙⠓⠲⢤⣤⣷⣤⣤⣤⣤⣾⣦⣤⣤⣶⣿⣿⣿⣿⡟⢹⠀⠀⢸⣿⣿⣿\n"
+                + "         ⣿⣿⣿⣿⣿⣿⣿⣧⡀⠀⠀⠀⠀⠀⠀⠀⠑⠀⢄⠀⡰⠁⠀⠀⠀⠀⠀⠈⠉⠁⠈⠉⠻⠋⠉⠛⢛⠉⠉⢹⠁⢀⢇⠎⠀⠀⢸⣿⣿⣿\n"
+                + "         ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⣀⠈⠢⢄⡉⠂⠄⡀⠀⠈⠒⠢⠄⠀⢀⣀⣀⣰⠀⠀⠀⠀⠀⠀⠀⠀⡀⠀⢀⣎⠀⠼⠊⠀⠀⠀⠘⣿⣿⣿\n"
+                + "         ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣄⡀⠉⠢⢄⡈⠑⠢⢄⡀⠀⠀⠀⠀⠀⠀⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠁⠀⠀⢀⠀⠀⠀⠀⠀⢻⣿⣿\n"
+                + "         ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣦⣀⡈⠑⠢⢄⡀⠈⠑⠒⠤⠄⣀⣀⠀⠉⠉⠉⠉⠀⠀⠀⣀⡀⠤⠂⠁⠀⢀⠆⠀⠀⢸⣿⣿\n"
+                + "         ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣦⣄⡀⠁⠉⠒⠂⠤⠤⣀⣀⣉⡉⠉⠉⠉⠉⢀⣀⣀⡠⠤⠒⠈⠀⠀⠀⠀⣸⣿⣿\n"
+                + "         ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣤⣄⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⣿⣿⣿\n"
+                + "         ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣶⣶⣶⣤⣤⣤⣤⣀⣀⣤⣤⣤⣶⣾⣿⣿⣿⣿⣿";
+        
+
+        JOptionPane.showMessageDialog(this, message);
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void txtSelectedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSelectedActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtSelectedActionPerformed
 
     /**
      * @param args the command line arguments
@@ -237,9 +496,15 @@ public class datatransaksi extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> comboKeranjang;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JTextField txtTanggal;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tableTransaksi;
+    private javax.swing.JTextField txtCari;
+    private javax.swing.JTextField txtSelected;
     // End of variables declaration//GEN-END:variables
 }

@@ -18,7 +18,7 @@ public class PBO2_2110010616 {
     public static void main(String[] args) {
         // TODO code application logic here
         new koneksi();
-        new login().setVisible(true);
+        new mainmenu().setVisible(true);
         
     }
     

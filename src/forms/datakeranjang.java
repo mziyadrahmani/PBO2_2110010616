@@ -85,6 +85,8 @@ public class dataKeranjang extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tableKeranjang = new javax.swing.JTable();
         jButton4 = new javax.swing.JButton();
+        jLabel10 = new javax.swing.JLabel();
+        txtCari = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -170,6 +172,19 @@ public class dataKeranjang extends javax.swing.JFrame {
             }
         });
 
+        jLabel10.setText("Cari data");
+
+        txtCari.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCariActionPerformed(evt);
+            }
+        });
+        txtCari.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtCariKeyPressed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -209,7 +224,7 @@ public class dataKeranjang extends javax.swing.JFrame {
                                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(50, 50, 50)
                                 .addComponent(txtHarga))))
-                    .addGroup(layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(48, 48, 48)
                         .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -220,8 +235,13 @@ public class dataKeranjang extends javax.swing.JFrame {
                         .addComponent(jButton2)))
                 .addGap(93, 93, 93))
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 456, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(33, 33, 33)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtCari, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -259,15 +279,19 @@ public class dataKeranjang extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
                     .addComponent(txtAlamat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(39, 39, 39)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2)
                     .addComponent(jButton3)
                     .addComponent(jButton4))
                 .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel10)
+                    .addComponent(txtCari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(7, 7, 7)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(70, Short.MAX_VALUE))
+                .addContainerGap(58, Short.MAX_VALUE))
         );
 
         pack();
@@ -375,7 +399,7 @@ public class dataKeranjang extends javax.swing.JFrame {
                 simpan.setString(7, txtAlamat.getText());
 
                 simpan.executeUpdate();
-
+                
                 JOptionPane.showMessageDialog(this, "Data berhasil disimpan");
                 tampilDataKeranjang();
                 spinnerJumlah.setValue(0);
@@ -462,6 +486,41 @@ public class dataKeranjang extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
+    private void txtCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCariActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCariActionPerformed
+
+    private void txtCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCariKeyPressed
+
+        modelTabelKeranjang.getDataVector().removeAllElements();
+        modelTabelKeranjang.fireTableDataChanged();
+
+        try {
+            String sqlcari = "SELECT * FROM datakeranjang WHERE namabarang LIKE ? OR namapembeli LIKE ?";
+            java.sql.PreparedStatement cari = myobject.connect.prepareStatement(sqlcari);
+            cari.setString(1, "%" + txtCari.getText() + "%");
+            cari.setString(2, "%" + txtCari.getText() + "%");
+            
+
+            ResultSet data = cari.executeQuery();
+            while (data.next()) {
+                Object[] baris = new Object[7];
+                baris[0] = data.getString("idkeranjang");
+                baris[1] = data.getString("namabarang");
+                baris[2] = data.getString("jumlah");
+                baris[3] = data.getString("totalharga");
+                baris[4] = data.getString("namapembeli");
+                baris[5] = data.getString("telepon");
+                baris[6] = data.getString("alamat");
+                modelTabelKeranjang.addRow(baris);
+            }
+            cari.close();
+            data.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_txtCariKeyPressed
+
     /**
      * @param args the command line arguments
      */
@@ -511,6 +570,7 @@ public class dataKeranjang extends javax.swing.JFrame {
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -523,6 +583,7 @@ public class dataKeranjang extends javax.swing.JFrame {
     private javax.swing.JSpinner spinnerJumlah;
     private javax.swing.JTable tableKeranjang;
     private javax.swing.JTextField txtAlamat;
+    private javax.swing.JTextField txtCari;
     private javax.swing.JTextField txtHarga;
     private javax.swing.JTextField txtNamaPembeli;
     private javax.swing.JTextField txtTelepon;

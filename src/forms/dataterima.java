@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author LENOVO
@@ -18,15 +19,26 @@ public class dataterima extends javax.swing.JFrame {
 
     
     koneksi myobject;
-    
+    public DefaultTableModel modelTabelTerima;
+
     public dataterima() {
         initComponents();
-        
+
         this.setLocationRelativeTo(null);
-        
+
         myobject = new koneksi();
-        
+
         comboSupplier.removeAllItems();
+
+        modelTabelTerima = new DefaultTableModel();
+        tableTerima.setModel(modelTabelTerima);
+        modelTabelTerima.addColumn("No");
+        modelTabelTerima.addColumn("Barang");
+        modelTabelTerima.addColumn("Supplier");
+        modelTabelTerima.addColumn("Jumlah");
+        modelTabelTerima.addColumn("Tanggal");
+
+        tampilDataTerima();
 
         try {
             Statement statement = koneksi.connect.createStatement();
@@ -61,6 +73,12 @@ public class dataterima extends javax.swing.JFrame {
         txtTanggal = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         comboSupplier = new javax.swing.JComboBox<>();
+        txtCari = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tableTerima = new javax.swing.JTable();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -114,6 +132,51 @@ public class dataterima extends javax.swing.JFrame {
             }
         });
 
+        txtCari.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCariActionPerformed(evt);
+            }
+        });
+        txtCari.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtCariKeyPressed(evt);
+            }
+        });
+
+        jLabel10.setText("Cari data");
+
+        tableTerima.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        tableTerima.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableTerimaMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tableTerima);
+
+        jButton3.setText("Ubah");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        jButton4.setText("Hapus");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -138,11 +201,22 @@ public class dataterima extends javax.swing.JFrame {
                         .addGap(201, 201, 201)
                         .addComponent(jLabel1))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(154, 154, 154)
-                        .addComponent(btnSimpan)
-                        .addGap(31, 31, 31)
-                        .addComponent(jButton2)))
-                .addContainerGap(81, Short.MAX_VALUE))
+                        .addGap(55, 55, 55)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnSimpan)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton3)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton4)
+                                .addGap(37, 37, 37)
+                                .addComponent(jButton2))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtCari, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(55, Short.MAX_VALUE))
         );
 
         layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {txtJumlah, txtNamaBarang, txtTanggal});
@@ -171,16 +245,49 @@ public class dataterima extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtTanggal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel5))))
-                .addGap(39, 39, 39)
+                .addGap(30, 30, 30)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSimpan)
-                    .addComponent(jButton2))
-                .addContainerGap(54, Short.MAX_VALUE))
+                    .addComponent(jButton2)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jButton3)
+                        .addComponent(jButton4)))
+                .addGap(27, 27, 27)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel10)
+                    .addComponent(txtCari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(7, 7, 7)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(38, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    public void tampilDataTerima() {
+        try {
+            modelTabelTerima.getDataVector().removeAllElements();
+            modelTabelTerima.fireTableDataChanged();
 
+            java.sql.PreparedStatement query = myobject.connect.prepareStatement("SELECT * FROM dataterima");
+            ResultSet data = query.executeQuery();
+            while (data.next()) {
+                Object[] kolom = new Object[8];
+                kolom[0] = data.getString("no");
+                kolom[1] = data.getString("barang");
+                kolom[2] = data.getString("supplier");
+                kolom[3] = data.getString("jumlah");
+                kolom[4] = data.getString("tanggal");
+                
+                modelTabelTerima.addRow(kolom);
+
+            }
+            query.close();
+            data.close();
+        } catch (Exception e) {
+        }
+    }
+    
+    
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
         mainmenu mainMenuForm = new mainmenu();
@@ -208,6 +315,7 @@ public class dataterima extends javax.swing.JFrame {
             } else {
                 String sql = "insert into dataterima value (null,'" + txtNamaBarang.getText() + "','" + comboSupplier.getSelectedItem()+ "','" + txtJumlah.getText() + "','" + txtTanggal.getText() + "')";
                 koneksi.connect.createStatement().execute(sql);
+                tampilDataTerima();
                 JOptionPane.showMessageDialog(this, "data berhasil di simpan");
                 txtNamaBarang.setText("");
                 txtTanggal.setText("");
@@ -230,19 +338,122 @@ public class dataterima extends javax.swing.JFrame {
     private void comboSupplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboSupplierActionPerformed
       
 //        try {
-//            Statement statement = koneksi.connect.createStatement(); // Reuse the existing connection from koneksi class
-//            String query = "SELECT nama FROM supplier"; // Modify the query to select the "nama" column from the "supplier" table
-//            ResultSet rs = statement.executeQuery(query);
+//            String selectedSupplier = comboSupplier.getSelectedItem().toString();
 //
-//            while (rs.next()) {
-//                String nama = rs.getString("nama");
-//                comboSupplier.addItem(nama);
+//            String query = "SELECT jumlah FROM supplier WHERE barang = ?";
+//
+//            java.sql.PreparedStatement preparedStatement = koneksi.connect.prepareStatement(query);
+//            preparedStatement.setString(1, selectedBarang);
+//            ResultSet rs = preparedStatement.executeQuery();
+//
+//            if (rs.next()) {
+//                int stok = rs.getInt("jumlah");
+//                txtStok.setText(String.valueOf(stok));
+//            } else {
+//                txtStok.setText("Tidak Ditemukan");
 //            }
-//        } catch (SQLException e) {
+//        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
 
     }//GEN-LAST:event_comboSupplierActionPerformed
+
+    private void txtCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCariActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCariActionPerformed
+
+    private void txtCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCariKeyPressed
+
+        modelTabelTerima.getDataVector().removeAllElements();
+        modelTabelTerima.fireTableDataChanged();
+
+        try {
+            String sqlcari = "SELECT * FROM dataterima WHERE barang LIKE ? OR supplier LIKE ?";
+            java.sql.PreparedStatement cari = myobject.connect.prepareStatement(sqlcari);
+            cari.setString(1, "%" + txtCari.getText() + "%");
+            cari.setString(2, "%" + txtCari.getText() + "%");
+            
+
+            ResultSet data = cari.executeQuery();
+            while (data.next()) {
+                Object[] baris = new Object[5];
+                baris[0] = data.getString("no");
+                baris[1] = data.getString("barang");
+                baris[2] = data.getString("supplier");
+                baris[3] = data.getString("jumlah");
+                baris[4] = data.getString("tanggal");
+
+                modelTabelTerima.addRow(baris);
+            }
+            cari.close();
+            data.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_txtCariKeyPressed
+
+    private void tableTerimaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableTerimaMouseClicked
+
+        int kolom = tableTerima.getSelectedRow();
+
+        if (kolom != -1) {
+            String barang = tableTerima.getValueAt(kolom, 1).toString();
+            String supplier = tableTerima.getValueAt(kolom, 2).toString();
+            String jumlah = tableTerima.getValueAt(kolom, 3).toString();
+            String tanggal = tableTerima.getValueAt(kolom, 3).toString();
+            
+            txtNamaBarang.setText(barang);
+            comboSupplier.setSelectedItem(supplier);
+            txtJumlah.setText(jumlah);
+            txtTanggal.setText(tanggal);
+
+        }
+    }//GEN-LAST:event_tableTerimaMouseClicked
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+
+        try {
+            if ((txtNamaBarang.getText().isEmpty())
+                && (txtJumlah.getText().isEmpty())
+                && (txtTanggal.getText().isEmpty())) {
+                JOptionPane.showMessageDialog(this, "Silahkan pilih data terlebih dahulu");
+            } else {
+                String sql = "UPDATE dataterima SET barang = ?,  jumlah = ?, tanggal = ? WHERE supplier = ?";
+                java.sql.PreparedStatement ubah = myobject.connect.prepareStatement(sql);
+                ubah.setString(1, txtNamaBarang.getText());
+                ubah.setString(2, txtJumlah.getText());
+                ubah.setString(3, txtTanggal.getText());
+                ubah.setString(4, (String) comboSupplier.getSelectedItem());
+                ubah.executeUpdate();
+                tampilDataTerima();
+                JOptionPane.showMessageDialog(this, "Data berhasil diubah!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+
+        try {
+            if ((txtNamaBarang.getText().isEmpty())
+                && (txtJumlah.getText().isEmpty())
+                && (txtTanggal.getText().isEmpty())) {
+                JOptionPane.showMessageDialog(this, "Silahkan pilih data terlebih dahulu");
+            } else {
+                String sql = "DELETE FROM dataterima WHERE barang = ?";
+                java.sql.PreparedStatement hapus = myobject.connect.prepareStatement(sql);
+                hapus.setString(1, txtNamaBarang.getText());
+
+                hapus.executeUpdate();
+                tampilDataTerima();
+                JOptionPane.showMessageDialog(this, "Data berhasil dihapus!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Terjadi kesalahan: " + e.getMessage());
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -286,11 +497,17 @@ public class dataterima extends javax.swing.JFrame {
     private javax.swing.JButton btnSimpan;
     private javax.swing.JComboBox<String> comboSupplier;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tableTerima;
+    private javax.swing.JTextField txtCari;
     private javax.swing.JTextField txtJumlah;
     private javax.swing.JTextField txtNamaBarang;
     private javax.swing.JTextField txtTanggal;

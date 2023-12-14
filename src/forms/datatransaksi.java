@@ -367,19 +367,32 @@ public class datatransaksi extends javax.swing.JFrame {
         modelTabelTransaksi.fireTableDataChanged();
 
         try {
-            String sqlcari = "SELECT * FROM datatransaksi WHERE barang LIKE ? OR supplier LIKE ?";
+            String searchText = "%" + txtCari.getText() + "%";
+            String sqlcari = "SELECT * FROM datatransaksi WHERE id LIKE ? OR namabarang LIKE ? OR jumlah LIKE ? "
+                    + "OR hargabarang LIKE ? OR totalharga LIKE ? OR namapembeli LIKE ? OR notelp LIKE ? OR alamat LIKE ? OR tanggal LIKE ?";
             java.sql.PreparedStatement cari = myobject.connect.prepareStatement(sqlcari);
-            cari.setString(1, "%" + txtCari.getText() + "%");
-            cari.setString(2, "%" + txtCari.getText() + "%");
+            cari.setString(1, searchText);
+            cari.setString(2, searchText);
+            cari.setString(3, searchText);
+            cari.setString(4, searchText);
+            cari.setString(5, searchText);
+            cari.setString(6, searchText);
+            cari.setString(7, searchText);
+            cari.setString(8, searchText);
+            cari.setString(9, searchText);
 
             ResultSet data = cari.executeQuery();
             while (data.next()) {
-                Object[] baris = new Object[5];
-                baris[0] = data.getString("no");
-                baris[1] = data.getString("barang");
-                baris[2] = data.getString("supplier");
-                baris[3] = data.getString("jumlah");
-                baris[4] = data.getString("tanggal");
+                Object[] baris = new Object[9];
+                baris[0] = data.getString("id");
+                baris[1] = data.getString("namabarang");
+                baris[2] = data.getString("jumlah");
+                baris[3] = data.getString("hargabarang");
+                baris[4] = data.getString("totalharga");
+                baris[5] = data.getString("namapembeli");
+                baris[6] = data.getString("notelp");
+                baris[7] = data.getString("alamat");
+                baris[8] = data.getString("tanggal");
 
                 modelTabelTransaksi.addRow(baris);
             }
@@ -445,7 +458,6 @@ public class datatransaksi extends javax.swing.JFrame {
                 + "         ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣦⣄⡀⠁⠉⠒⠂⠤⠤⣀⣀⣉⡉⠉⠉⠉⠉⢀⣀⣀⡠⠤⠒⠈⠀⠀⠀⠀⣸⣿⣿\n"
                 + "         ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣤⣄⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⣿⣿⣿\n"
                 + "         ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣶⣶⣶⣤⣤⣤⣤⣀⣀⣤⣤⣤⣶⣾⣿⣿⣿⣿⣿";
-        
 
         JOptionPane.showMessageDialog(this, message);
     }//GEN-LAST:event_jButton3ActionPerformed

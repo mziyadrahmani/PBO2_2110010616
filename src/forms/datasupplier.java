@@ -340,9 +340,14 @@ public class datasupplier extends javax.swing.JFrame {
         modelTabelSupplier.fireTableDataChanged();
 
         try {
-            String sqlcari = "SELECT * FROM supplier WHERE nama LIKE '%" + txtCari.getText() + "%'";
-            Statement statement = myobject.connect.createStatement();
-            ResultSet data = statement.executeQuery(sqlcari);
+            String searchText = "%" + txtCari.getText() + "%";
+            String sqlcari = "SELECT * FROM supplier WHERE id LIKE ? OR nama LIKE ? OR alamat LIKE ? OR telp LIKE ?";
+            java.sql.PreparedStatement cari = myobject.connect.prepareStatement(sqlcari);
+            cari.setString(1, searchText);
+            cari.setString(2, searchText);
+            cari.setString(3, searchText);
+            cari.setString(4, searchText);
+            ResultSet data = cari.executeQuery();
 
             while (data.next()) {
                 Object[] baris = new Object[4];
@@ -354,7 +359,7 @@ public class datasupplier extends javax.swing.JFrame {
                 modelTabelSupplier.addRow(baris);
             }
 
-            statement.close();
+            cari.close();
             data.close();
         } catch (Exception e) {
             e.printStackTrace();

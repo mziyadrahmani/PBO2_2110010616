@@ -246,12 +246,13 @@ public class dataterima extends javax.swing.JFrame {
                             .addComponent(txtTanggal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel5))))
                 .addGap(30, 30, 30)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnSimpan)
-                    .addComponent(jButton2)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jButton3)
-                        .addComponent(jButton4)))
+                        .addComponent(jButton4))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnSimpan)
+                        .addComponent(jButton2)))
                 .addGap(27, 27, 27)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
@@ -368,10 +369,14 @@ public class dataterima extends javax.swing.JFrame {
         modelTabelTerima.fireTableDataChanged();
 
         try {
-            String sqlcari = "SELECT * FROM dataterima WHERE barang LIKE ? OR supplier LIKE ?";
+            String searchText = "%" + txtCari.getText() + "%";
+            String sqlcari = "SELECT * FROM dataterima WHERE no LIKE ? OR barang LIKE ? OR supplier LIKE ? OR jumlah LIKE ? OR tanggal LIKE ?";
             java.sql.PreparedStatement cari = myobject.connect.prepareStatement(sqlcari);
-            cari.setString(1, "%" + txtCari.getText() + "%");
-            cari.setString(2, "%" + txtCari.getText() + "%");
+            cari.setString(1, searchText);
+            cari.setString(2, searchText);
+            cari.setString(3, searchText);
+            cari.setString(4, searchText);
+            cari.setString(5, searchText);
             
 
             ResultSet data = cari.executeQuery();

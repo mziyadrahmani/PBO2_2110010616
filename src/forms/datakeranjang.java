@@ -453,7 +453,7 @@ public class dataKeranjang extends javax.swing.JFrame {
             String harga = tableKeranjang.getValueAt(kolom, 3).toString();
             String totalharga = tableKeranjang.getValueAt(kolom, 4).toString();
             String namapembeli = tableKeranjang.getValueAt(kolom, 5).toString();
-            String telepon = tableKeranjang.getValueAt(kolom, 6).toString();
+            String notelp = tableKeranjang.getValueAt(kolom, 6).toString();
             String alamat = tableKeranjang.getValueAt(kolom, 7).toString();
 
             comboKeranjang.setSelectedItem(namabarang);
@@ -461,7 +461,7 @@ public class dataKeranjang extends javax.swing.JFrame {
             txtHarga.setText(harga);
             txtTotal.setText(totalharga);
             txtNamaPembeli.setText(namapembeli);
-            txtTelepon.setText(telepon);
+            txtTelepon.setText(notelp);
             txtAlamat.setText(alamat);
         }
     }//GEN-LAST:event_tableKeranjangMouseClicked
@@ -496,22 +496,31 @@ public class dataKeranjang extends javax.swing.JFrame {
         modelTabelKeranjang.fireTableDataChanged();
 
         try {
-            String sqlcari = "SELECT * FROM datakeranjang WHERE namabarang LIKE ? OR namapembeli LIKE ?";
+            String searchText = "%" + txtCari.getText() + "%";
+            String sqlcari = "SELECT * FROM datakeranjang WHERE idkeranjang LIKE ? OR namabarang LIKE ? OR jumlah LIKE ? "
+                    + "OR hargabarang LIKE ? OR totalharga LIKE ? OR namapembeli LIKE ? OR notelp LIKE ? OR alamat LIKE ?";
             java.sql.PreparedStatement cari = myobject.connect.prepareStatement(sqlcari);
-            cari.setString(1, "%" + txtCari.getText() + "%");
-            cari.setString(2, "%" + txtCari.getText() + "%");
+            cari.setString(1, searchText);
+            cari.setString(2, searchText);
+            cari.setString(3, searchText);
+            cari.setString(4, searchText);
+            cari.setString(5, searchText);
+            cari.setString(6, searchText);
+            cari.setString(7, searchText);
+            cari.setString(8, searchText);
             
 
             ResultSet data = cari.executeQuery();
             while (data.next()) {
-                Object[] baris = new Object[7];
+                Object[] baris = new Object[8];
                 baris[0] = data.getString("idkeranjang");
                 baris[1] = data.getString("namabarang");
                 baris[2] = data.getString("jumlah");
-                baris[3] = data.getString("totalharga");
-                baris[4] = data.getString("namapembeli");
-                baris[5] = data.getString("telepon");
-                baris[6] = data.getString("alamat");
+                baris[3] = data.getString("hargabarang");
+                baris[4] = data.getString("totalharga");
+                baris[5] = data.getString("namapembeli");
+                baris[6] = data.getString("notelp");
+                baris[7] = data.getString("alamat");
                 modelTabelKeranjang.addRow(baris);
             }
             cari.close();

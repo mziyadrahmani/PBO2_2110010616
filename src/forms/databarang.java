@@ -390,10 +390,13 @@ public class dataBarang extends javax.swing.JFrame {
         modelTabelBarang.fireTableDataChanged();
 
         try {
-            String sqlcari = "SELECT * FROM databarang WHERE nama LIKE ? OR harga LIKE ?";
+            String searchText = "%" + txtCari.getText() + "%";
+            String sqlcari = "SELECT * FROM databarang WHERE id LIKE ? OR nama LIKE ? OR harga LIKE ? OR stok LIKE ?";
             java.sql.PreparedStatement cari = myobject.connect.prepareStatement(sqlcari);
-            cari.setString(1, "%" + txtCari.getText() + "%");
-            cari.setString(2, "%" + txtCari.getText() + "%");
+            cari.setString(1, searchText);
+            cari.setString(2, searchText);
+            cari.setString(3, searchText);
+            cari.setString(4, searchText);
 
             ResultSet data = cari.executeQuery();
             while (data.next()) {

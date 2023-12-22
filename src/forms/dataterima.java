@@ -3,14 +3,18 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package forms;
-import com.mysql.jdbc.ResultSetImpl;
 import database.koneksi;
 import java.awt.HeadlessException;
+import java.sql.Connection;
 import javax.swing.JOptionPane;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.view.JasperViewer;
 /**
  *
  * @author LENOVO
@@ -79,6 +83,7 @@ public class dataterima extends javax.swing.JFrame {
         tableTerima = new javax.swing.JTable();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        btnCetak = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -177,6 +182,13 @@ public class dataterima extends javax.swing.JFrame {
             }
         });
 
+        btnCetak.setText("Cetak");
+        btnCetak.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCetakActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -215,7 +227,10 @@ public class dataterima extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtCari, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(txtCari, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(14, 14, 14)
+                        .addComponent(btnCetak)))
                 .addContainerGap(55, Short.MAX_VALUE))
         );
 
@@ -226,7 +241,9 @@ public class dataterima extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(50, 50, 50)
+                .addGap(11, 11, 11)
+                .addComponent(btnCetak)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel1)
                 .addGap(44, 44, 44)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -460,6 +477,20 @@ public class dataterima extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
+    private void btnCetakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCetakActionPerformed
+        try {
+            String reporthPath = "src/report/reportdataterimabarang.jasper";
+            Connection conn = koneksi.connect;
+
+            HashMap<String, Object> parameters = new HashMap<>();
+            JasperPrint print = JasperFillManager.fillReport(reporthPath, parameters, conn);
+            JasperViewer viewer = new JasperViewer(print, false);
+            viewer.setVisible(true);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "error");
+        }
+    }//GEN-LAST:event_btnCetakActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -499,6 +530,7 @@ public class dataterima extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCetak;
     private javax.swing.JButton btnSimpan;
     private javax.swing.JComboBox<String> comboSupplier;
     private javax.swing.JButton jButton2;

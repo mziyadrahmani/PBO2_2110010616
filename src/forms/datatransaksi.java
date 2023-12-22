@@ -1,4 +1,4 @@
-/*
+    /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
@@ -7,12 +7,17 @@ package forms;
 import database.koneksi;
 import javax.swing.JOptionPane;
 import java.awt.HeadlessException;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -96,6 +101,7 @@ public class datatransaksi extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         txtSelected = new javax.swing.JTextField();
+        btnCetak = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -179,6 +185,13 @@ public class datatransaksi extends javax.swing.JFrame {
             }
         });
 
+        btnCetak.setText("Cetak");
+        btnCetak.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCetakActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -218,11 +231,17 @@ public class datatransaksi extends javax.swing.JFrame {
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addGap(431, 431, 431))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addComponent(btnCetak)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(58, 58, 58)
+                .addGap(13, 13, 13)
+                .addComponent(btnCetak)
+                .addGap(18, 18, 18)
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -466,6 +485,20 @@ public class datatransaksi extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtSelectedActionPerformed
 
+    private void btnCetakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCetakActionPerformed
+        try {
+            String reporthPath = "src/report/reportdatatransaksi.jasper";
+            Connection conn = koneksi.connect;
+
+            HashMap<String, Object> parameters = new HashMap<>();
+            JasperPrint print = JasperFillManager.fillReport(reporthPath, parameters, conn);
+            JasperViewer viewer = new JasperViewer(print, false);
+            viewer.setVisible(true);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "error");
+        }
+    }//GEN-LAST:event_btnCetakActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -505,6 +538,7 @@ public class datatransaksi extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCetak;
     private javax.swing.JComboBox<String> comboKeranjang;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
